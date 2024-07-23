@@ -1,56 +1,64 @@
-function initArcScript() {
-    console.log("Script loaded successfully!");
-  // Function to create and show the text "Arc"
-    function showArcText() {
-        // Create the text element
-        var arcText = document.createElement('div');
-        arcText.innerText = 'Arc';
-        arcText.id = 'arcText';
-        arcText.style.position = 'fixed';
-        arcText.style.top = '50%';
-        arcText.style.left = '50%';
-        arcText.style.transform = 'translate(-50%, -50%)';
-        arcText.style.fontSize = '2em';
-        arcText.style.color = 'white';
-        arcText.style.backgroundColor = 'black';
-        arcText.style.padding = '10px';
-        arcText.style.borderRadius = '5px';
-        arcText.style.zIndex = '9999';
-        document.body.appendChild(arcText);
+function createMovableContainer() {
+  // Create the container
+  const container = document.createElement('div');
+  container.id = 'movable-container';
+  container.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: move;
+    user-select: none;
+    z-index: 10000;
+  `;
+  container.textContent = 'Drag me!';
+  document.body.appendChild(container);
 
-        // Remove the text after 2 seconds
-        setTimeout(() => {
-            document.body.removeChild(arcText);
-            showMobileContainer();
-        }, 2000);
+  // Make it movable
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  container.addEventListener("mousedown", dragStart);
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", dragEnd);
+
+  function dragStart(e) {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+    isDragging = true;
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+      xOffset = currentX;
+      yOffset = currentY;
+      setTranslate(currentX, currentY, container);
     }
+  }
 
-    // Function to create and show the mobile container with animation
-    function showMobileContainer() {
-        // Create the container element
-        var container = document.createElement('div');
-        container.id = 'mobileContainer';
-        container.style.position = 'fixed';
-        container.style.bottom = '0';
-        container.style.left = '0';
-        container.style.width = '100%';
-        container.style.height = '200px';
-        container.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        container.style.color = 'white';
-        container.style.display = 'flex';
-        container.style.justifyContent = 'center';
-        container.style.alignItems = 'center';
-        container.style.transform = 'translateY(100%)';
-        container.style.transition = 'transform 0.5s ease-in-out';
-        container.innerHTML = '<p>Mobile Container</p>';
-        document.body.appendChild(container);
+  function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+  }
 
-        // Trigger the animation
-        setTimeout(() => {
-            container.style.transform = 'translateY(0)';
-        }, 100);
-    }
-
-    // Initialize the functions
-    showArcText();
+  function setTranslate(xPos, yPos, el) {
+    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+  }
 }
+
+// Execute the function
+createMovableContainer();
