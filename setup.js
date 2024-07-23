@@ -1,5 +1,6 @@
 function initArcScript() {
-    // Function to create and show the text "Arc"
+    console.log("Script loaded successfully!");
+  // Function to create and show the text "Arc"
     function showArcText() {
         // Create the text element
         var arcText = document.createElement('div');
